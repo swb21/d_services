@@ -1,6 +1,7 @@
 from django.contrib import admin
+from rest_framework.authtoken.admin import TokenAdmin
 
-from services.models import Dormitory, Profile, Staff, StaffRequest, WashingMachine, WashingSchedule
+from services.models import Dormitory, Profile, Staff, StaffRequest, WashingMachine, WashingSchedule, WashingTime
 
 
 @admin.register(Dormitory)
@@ -28,6 +29,15 @@ class WashingMachineAdmin(admin.ModelAdmin):
     model = WashingMachine
 
 
+@admin.register(WashingTime)
+class WashingTimeAdmin(admin.ModelAdmin):
+    model = WashingTime
+
+
 @admin.register(WashingSchedule)
 class WashingScheduleAdmin(admin.ModelAdmin):
     model = WashingSchedule
+
+
+# DRF tokens
+TokenAdmin.raw_id_fields = ('user',)

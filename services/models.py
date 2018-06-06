@@ -98,11 +98,24 @@ class WashingMachine(models.Model):
             self.get_is_exploitable_display())
 
 
+class WashingTime(models.Model):
+    time = models.TimeField()
+
+    class Meta:
+        verbose_name = _('Washing time')
+        verbose_name_plural = _('Washing time')
+        ordering = ['time']
+
+    def __str__(self):
+        return "{}".format(self.time)
+
+
 class WashingSchedule(models.Model):
     washing_machine = models.ForeignKey(
         WashingMachine, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    washing_time = models.DateTimeField()
+    date = models.DateField()
+    time = models.ForeignKey(WashingTime, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = _('Washing schedule')
@@ -119,9 +132,10 @@ class WashingSchedule(models.Model):
             self, force_update=False, using=None, update_fields=None)
 
     def __str__(self):
-        return "Who: {}, when: {}, dormitory/washing machine: {}/{}".format(
-            self.user.get_full_name(), self.washing_time,
-            self.washing_machine.dormitory.number, self.washing_machine.number)
+        return "Who: {}, when: {}, dormitory/washing machine: {}/{} {}".format(self.user.get_full_name(), self.date,
+                                                                               self.time.time,
+                                                                               self.washing_machine.dormitory.number,
+                                                                               self.washing_machine.number)
 
 
 @receiver(post_save, sender=User)

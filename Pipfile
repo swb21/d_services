@@ -8,6 +8,8 @@ django = "==1.11"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
+drf-extensions = "*"
+drf-nested-routers = "*"
 
 [dev-packages]
 yapf = "*"

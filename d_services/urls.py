@@ -16,7 +16,16 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from services.token import ObtainAuthTokenAndUser
+from services.views import UserAPIView, WashingTimeAPIView
+
+api_urls = [
+    url(r'^token-auth/$', ObtainAuthTokenAndUser.as_view()),
+    url(r'^users/', UserAPIView.as_view(), name='user-list'),
+    url(r'^free-washing-time/', WashingTimeAPIView.as_view(), name='washing-time-list'),
+]
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls'))
+    url(r'^api/', include(api_urls, namespace='api')),
 ]
