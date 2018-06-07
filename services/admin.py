@@ -40,4 +40,4 @@ class WashingScheduleAdmin(admin.ModelAdmin):
 
 
 # DRF tokens
-TokenAdmin.raw_id_fields = ('user',)
+TokenAdmin.raw_id_fields = ('user', )

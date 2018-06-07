@@ -17,12 +17,20 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from services.token import ObtainAuthTokenAndUser
-from services.views import UserAPIView, WashingTimeAPIView
+from services.views import UserAPIView, WashingTimeAPIView, FreeWashingMachinesAPIView, WashingScheduleAPIView
 
 api_urls = [
     url(r'^token-auth/$', ObtainAuthTokenAndUser.as_view()),
     url(r'^users/', UserAPIView.as_view(), name='user-list'),
-    url(r'^free-washing-time/', WashingTimeAPIView.as_view(), name='washing-time-list'),
+    url(r'^free-washing-time/$',
+        WashingTimeAPIView.as_view(),
+        name='free-washing-time-list'),
+    url(r'^free-washing-machines/$',
+        FreeWashingMachinesAPIView.as_view(),
+        name='free-washing-machines-list'),
+    url(r'^washing-schedule/$',
+        WashingScheduleAPIView.as_view(),
+        name='washing-schedule-list'),
 ]
 
 urlpatterns = [

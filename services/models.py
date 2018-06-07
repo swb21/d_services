@@ -13,7 +13,7 @@ phone_validator = RegexValidator(
 
 
 class Dormitory(models.Model):
-    number = models.PositiveSmallIntegerField()
+    number = models.PositiveSmallIntegerField(unique=True)
     address = models.CharField(max_length=80)
     commandant_phone = models.CharField(
         validators=[phone_validator], max_length=17, null=True, blank=True)
@@ -30,6 +30,7 @@ class Dormitory(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    fullname = models.CharField(max_length=90)
     dormitory = models.ForeignKey(
         Dormitory, on_delete=models.SET_NULL, null=True, blank=True)
     room = models.CharField(max_length=5, null=True, blank=True)
@@ -126,16 +127,14 @@ class WashingSchedule(models.Model):
              force_update=False,
              using=None,
              update_fields=None):
-        # if self.washing_time
 
         super(WashingSchedule, self).save(
             self, force_update=False, using=None, update_fields=None)
 
     def __str__(self):
-        return "Who: {}, when: {}, dormitory/washing machine: {}/{} {}".format(self.user.get_full_name(), self.date,
-                                                                               self.time.time,
-                                                                               self.washing_machine.dormitory.number,
-                                                                               self.washing_machine.number)
+        return "Who: {}, when: {}, dormitory/washing machine: {}/{} {}".format(
+            self.user.get_full_name(), self.date, self.time.time,
+            self.washing_machine.dormitory.number, self.washing_machine.number)
 
 
 @receiver(post_save, sender=User)

@@ -1,17 +1,26 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from services.models import User, WashingSchedule, WashingTime
+from services.models import Profile, User, WashingTime, WashingMachine, WashingSchedule
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('fullname', 'phone_number', 'dormitory', 'room')
 
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
+
+    profile = ProfileSerializer()
 
     class Meta:
         model = User
         fields = ("id", "username", "email", "password", "confirm_password",
-                  "date_joined")
+                  "date_joined", "profile")
 
     def create(self, validated_data):
         """
@@ -20,7 +29,16 @@ class UserSerializer(serializers.ModelSerializer):
         """
         del validated_data["confirm_password"]
         validated_data["password"] = make_password(validated_data["password"])
-        return super(UserSerializer, self).create(validated_data)
+
+        profile_data = validated_data.pop('profile')
+
+        user = User.objects.create(**validated_data)
+        profile, created = Profile.objects.update_or_create(
+            user=user,
+            defaults=profile_data,
+        )
+
+        return profile.user
 
     def validate(self, attrs):
         """
@@ -35,4 +53,16 @@ class UserSerializer(serializers.ModelSerializer):
 class WashingTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WashingTime
+        fields = ('id', 'time')
+
+
+class WashingMachineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WashingMachine
+        fields = ('id', 'number')
+
+
+class WashingScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WashingSchedule
         fields = "__all__"

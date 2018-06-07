@@ -4,7 +4,8 @@ from services.models import WashingSchedule
 
 
 class WashingScheduleFilter(filters.FilterSet):
-
     class Meta:
         model = WashingSchedule
-        fields = ['washing_time', ]
+        fields = [
+            'washing_time',
+        ]

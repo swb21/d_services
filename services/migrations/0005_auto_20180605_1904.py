@@ -17,7 +17,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WashingTime',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id',
+                 models.AutoField(
+                     auto_created=True,
+                     primary_key=True,
+                     serialize=False,
+                     verbose_name='ID')),
                 ('time', models.TimeField()),
             ],
         ),
@@ -34,6 +39,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='washingschedule',
             name='time',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='services.WashingTime'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to='services.WashingTime'),
         ),
     ]
