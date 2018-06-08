@@ -1,13 +1,13 @@
-from django.db.models import Prefetch, Count
-from rest_framework import authentication
-from rest_framework.generics import CreateAPIView, ListAPIView
+from django.db.models import Count
+from rest_framework import authentication, generics, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from services.models import User, WashingTime, WashingSchedule, WashingMachine
-from services.serializers import UserSerializer, WashingTimeSerializer, WashingMachineSerializer, \
-    WashingScheduleSerializer
+from services.models import *
+from services.serializers import *
 
 
-class UserAPIView(CreateAPIView):
+class UserAPIView(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
 
@@ -15,19 +15,33 @@ class UserAPIView(CreateAPIView):
     queryset = User.objects.all()
 
 
-class WashingTimeAPIView(ListAPIView):
-    authentication_classes = (authentication.TokenAuthentication, )
+class DormitoryAPIView(APIView):
+    authentication_classes = ()
     permission_classes = ()
 
-    serializer_class = WashingTimeSerializer
-
-    def get_queryset(self):
+    def get(self, request, format=None):
         """
         Gets time in which at least one machine is free
         by `date` and `dormitory` query parameters
         """
-        queryset = WashingTime.objects.all()
+        dormitories = [{
+            'id': dormitory.id,
+            'number': dormitory.number,
+            'address': dormitory.address
+        } for dormitory in Dormitory.objects.all()]
 
+        return Response({'dormitories': dormitories})
+
+
+class WashingTimeAPIView(APIView):
+    authentication_classes = (authentication.TokenAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request, format=None):
+        """
+        Gets time in which at least one machine is free
+        by `date` and `dormitory` query parameters
+        """
         date = self.request.query_params.get('date', None)
         dormitory = self.request.query_params.get('dormitory', None)
 
@@ -38,16 +52,40 @@ class WashingTimeAPIView(ListAPIView):
                 cnt=Count('id')).filter(
                     cnt__exact=machines_count, date=date).values_list(
                         'time', flat=True)
-            queryset = WashingTime.objects.exclude(id__in=busy_time)
+            free_time = [{
+                'id': time.id,
+                'time': time.time
+            } for time in WashingTime.objects.exclude(id__in=busy_time)]
 
-        return queryset
+            return Response({'times': free_time})
 
 
-class FreeWashingMachinesAPIView(ListAPIView):
+class FreeWashingMachinesAPIView(APIView):
     authentication_classes = (authentication.TokenAuthentication, )
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticated, )
 
-    serializer_class = WashingMachineSerializer
+    def get(self, request, format=None):
+        """
+        Gets time in which at least one machine is free
+        by `date` and `dormitory` query parameters
+        """
+        date = request.query_params.get('date', None)
+        time = request.query_params.get('time', None)
+        dormitory = request.query_params.get('dormitory', None)
+
+        if date is not None and time is not None and dormitory is not None:
+            busy_machines = WashingSchedule.objects.filter(
+                user__profile__dormitory__number=dormitory,
+                date=date,
+                time=time).values_list(
+                    'washing_machine', flat=True)
+            washing_machines = [{
+                'id': washing_machine.id,
+                'number': washing_machine.number
+            } for washing_machine in WashingMachine.objects.filter(
+                is_exploitable=True).exclude(id__in=busy_machines)]
+
+            return Response({'washing_machines': washing_machines})
 
     def get_queryset(self):
         """
@@ -72,9 +110,9 @@ class FreeWashingMachinesAPIView(ListAPIView):
         return queryset
 
 
-class WashingScheduleAPIView(CreateAPIView):
+class WashingScheduleAPIView(generics.CreateAPIView):
     authentication_classes = (authentication.TokenAuthentication, )
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticated, )
 
     serializer_class = WashingScheduleSerializer
     queryset = WashingSchedule

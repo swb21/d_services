@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from services.models import Profile, User, WashingTime, WashingMachine, WashingSchedule
+from services.models import *
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -66,3 +66,9 @@ class WashingScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = WashingSchedule
         fields = "__all__"
+
+
+class DormitorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dormitory
+        fields = ('id', 'number', 'address')

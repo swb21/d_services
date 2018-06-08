@@ -17,7 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from services.token import ObtainAuthTokenAndUser
-from services.views import UserAPIView, WashingTimeAPIView, FreeWashingMachinesAPIView, WashingScheduleAPIView
+from services.views import UserAPIView, WashingTimeAPIView, FreeWashingMachinesAPIView, WashingScheduleAPIView, \
+    DormitoryAPIView
 
 api_urls = [
     url(r'^token-auth/$', ObtainAuthTokenAndUser.as_view()),
@@ -31,6 +32,7 @@ api_urls = [
     url(r'^washing-schedule/$',
         WashingScheduleAPIView.as_view(),
         name='washing-schedule-list'),
+    url(r'^dormitories/$', DormitoryAPIView.as_view(), name='dormitory-list'),
 ]
 
 urlpatterns = [
