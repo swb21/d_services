@@ -21,9 +21,6 @@ DATA_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p3ff8#fyqlh9l=nk=6$%e0otuk$apm@_3g%%eaaicpc=50!=66'
-
 ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
@@ -50,6 +47,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
