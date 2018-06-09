@@ -121,6 +121,8 @@ class WashingSchedule(models.Model):
     class Meta:
         verbose_name = _('Washing schedule')
         verbose_name_plural = _('Washing schedules')
+        ordering = ['date', 'time', 'washing_machine']
+        unique_together = (('user', 'date'),)
 
     def save(self,
              force_insert=False,
@@ -132,7 +134,7 @@ class WashingSchedule(models.Model):
             self, force_update=False, using=None, update_fields=None)
 
     def __str__(self):
-        return "Who: {}, when: {}, dormitory/washing machine: {}/{} {}".format(
+        return "Who: {}, when: {} {}, dormitory/washing machine: {}/{}".format(
             self.user.get_full_name(), self.date, self.time.time,
             self.washing_machine.dormitory.number, self.washing_machine.number)
 
