@@ -43,7 +43,7 @@ class Profile(models.Model):
         verbose_name_plural = _('Profiles')
 
     def __str__(self):
-        return "{}, {}".format(self.user.get_full_name() or 'No name',
+        return "{}, {}".format(self.fullname or 'No name',
                                self.phone_number or 'No phone number')
 
 
