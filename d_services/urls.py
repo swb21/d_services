@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework.routers import SimpleRouter
 
 from services.token import ObtainAuthTokenAndUser
 from services.views import *
@@ -32,7 +33,12 @@ api_urls = [
         WashingScheduleAPIView.as_view(),
         name='washing-schedule-list'),
     url(r'^dormitories/$', DormitoryAPIView.as_view(), name='dormitory-list'),
-    # url(r'^staff-requests/$', StaffRequestAPIView.as_view(), name='staff-request-list'),
+    url(r'^staff-requests/$',
+        StaffRequestAPIView.as_view(),
+        name='staff-request-list'),
+    url(r'^staff-requests/(?P<pk>\d+)/$',
+        StaffRequestDetailAPIView.as_view(),
+        name='staff-request-detail'),
 ]
 
 urlpatterns = [

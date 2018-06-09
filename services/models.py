@@ -68,6 +68,7 @@ class StaffRequest(models.Model):
     description = models.TextField()
     desired_time = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    reply = models.TextField(blank=True, null=True)
 
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -77,8 +78,8 @@ class StaffRequest(models.Model):
         verbose_name_plural = _('Staff requests')
 
     def __str__(self):
-        return "Who: {}, to whom{}".format(self.user.get_full_name(),
-                                           self.staff.working_position)
+        return "Who: {}, to whom: {}".format(self.user.profile.fullname,
+                                             self.staff.working_position)
 
 
 class WashingMachine(models.Model):

@@ -1,5 +1,5 @@
 from django.db.models import Count
-from rest_framework import authentication, generics, permissions
+from rest_framework import authentication, generics, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -115,19 +115,20 @@ class WashingScheduleAPIView(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated, )
 
     serializer_class = WashingScheduleSerializer
-    queryset = WashingSchedule
+    queryset = WashingSchedule.objects.all()
 
 
 class StaffRequestAPIView(generics.ListCreateAPIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    # permission_classes = (permissions.IsAuthenticated,)
-    permission_classes = ()
+    authentication_classes = (authentication.TokenAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     serializer_class = StaffRequestSerializer
-    queryset = StaffRequest
+    queryset = StaffRequest.objects.all()
 
-    def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+class StaffRequestDetailAPIView(generics.RetrieveAPIView):
+    authentication_classes = (authentication.TokenAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    serializer_class = StaffRequestSerializer
+    queryset = StaffRequest.objects.all()
