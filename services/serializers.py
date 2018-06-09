@@ -13,14 +13,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
-    date_joined = serializers.DateTimeField(read_only=True)
 
     profile = ProfileSerializer()
 
     class Meta:
         model = User
-        fields = ("id", "username", "email", "password", "confirm_password",
-                  "date_joined", "profile")
+        fields = ("id", "username", "email", "password", "confirm_password", "is_staff", "profile")
 
     def create(self, validated_data):
         """
