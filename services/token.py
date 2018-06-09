@@ -16,7 +16,4 @@ class ObtainAuthTokenAndUser(ObtainAuthToken):
         user = User.objects.get(id=token.user_id)
         serializer = UserSerializer(user)
 
-        return Response({
-            'token': token.key,
-            'user': serializer.data
-        })
+        return Response({'token': token.key, 'user': serializer.data})

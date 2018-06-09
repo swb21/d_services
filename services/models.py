@@ -43,8 +43,8 @@ class Profile(models.Model):
         verbose_name_plural = _('Profiles')
 
     def __str__(self):
-        return "{}, {}".format(self.fullname or 'No name',
-                               self.phone_number or 'No phone number')
+        return "{}, {}".format(self.fullname or 'No name', self.phone_number
+                               or 'No phone number')
 
 
 class Staff(Profile):
