@@ -11,6 +11,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_staff = serializers.SerializerMethodField(read_only=True)
+
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
 
@@ -48,6 +50,9 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Those passwords don't match.")
         return attrs
 
+    def get_is_staff(self, obj):
+        return int(obj.is_staff)
+
 
 class WashingTimeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,3 +76,9 @@ class DormitorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Dormitory
         fields = ('id', 'number', 'address')
+
+
+class StaffRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaffRequest
+        fields = "__all__"

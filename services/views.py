@@ -116,3 +116,18 @@ class WashingScheduleAPIView(generics.CreateAPIView):
 
     serializer_class = WashingScheduleSerializer
     queryset = WashingSchedule
+
+
+class StaffRequestAPIView(generics.ListCreateAPIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
+
+    serializer_class = StaffRequestSerializer
+    queryset = StaffRequest
+
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
