@@ -1,9 +1,9 @@
 from .base import *
 import dj_database_url
 
-SECRET_KEY = 'p3ff8#fyqlh9l=nk=6$%e0otuk$apm@_3g%%eaaicpc=50!=66'
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-DEBUG = False
+DEBUG = bool(os.environ.get('DEBUG', False))
 
 ALLOWED_HOSTS.append('d-services.herokuapp.com')
 
