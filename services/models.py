@@ -28,7 +28,7 @@ class Dormitory(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 
     fullname = models.CharField(max_length=90)
     dormitory = models.ForeignKey(
@@ -47,12 +47,21 @@ class Profile(models.Model):
                                or 'No phone number')
 
 
-class Staff(Profile):
+class Staff(models.Model):
     working_position = models.CharField(max_length=20)
-
     starts_working_at = models.TimeField(null=True, blank=True)
     ends_working_at = models.TimeField(null=True, blank=True)
     works_on_weekend = models.BooleanField(default=False)
+
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = _('Employee')
+        verbose_name_plural = _('Staff')
+
+    def __str__(self):
+        return "{}, {}".format(self.user.profile.fullname or 'No name',
+                               self.working_position)
 
 
 class StaffRequest(models.Model):
@@ -122,7 +131,7 @@ class WashingSchedule(models.Model):
         verbose_name = _('Washing schedule')
         verbose_name_plural = _('Washing schedules')
         ordering = ['date', 'time', 'washing_machine']
-        unique_together = (('user', 'date'),)
+        unique_together = (('user', 'date'), )
 
     def save(self,
              force_insert=False,
@@ -134,9 +143,9 @@ class WashingSchedule(models.Model):
             self, force_update=False, using=None, update_fields=None)
 
     def __str__(self):
-        return "When: {} {}, dormitory/washing machine: {}/{}".format(self.date, self.time.time,
-                                                                      self.washing_machine.dormitory.number,
-                                                                      self.washing_machine.number)
+        return "When: {} {}, dormitory/washing machine: {}/{}".format(
+            self.date, self.time.time, self.washing_machine.dormitory.number,
+            self.washing_machine.number)
 
 
 @receiver(post_save, sender=User)
