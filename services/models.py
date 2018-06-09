@@ -134,9 +134,9 @@ class WashingSchedule(models.Model):
             self, force_update=False, using=None, update_fields=None)
 
     def __str__(self):
-        return "Who: {}, when: {} {}, dormitory/washing machine: {}/{}".format(
-            self.user.get_full_name(), self.date, self.time.time,
-            self.washing_machine.dormitory.number, self.washing_machine.number)
+        return "When: {} {}, dormitory/washing machine: {}/{}".format(self.date, self.time.time,
+                                                                      self.washing_machine.dormitory.number,
+                                                                      self.washing_machine.number)
 
 
 @receiver(post_save, sender=User)
